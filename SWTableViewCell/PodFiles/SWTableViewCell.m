@@ -8,6 +8,7 @@
 
 #import "SWTableViewCell.h"
 #import "SWUtilityButtonView.h"
+#import "SWClipView.h"
 
 static NSString * const kTableViewCellContentView = @"UITableViewCellContentView";
 
@@ -89,6 +90,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     [self.cellScrollView addSubview:_contentCellView];
     
     // Add the cell scroll view to the cell
+    
+    Class clipViewClass = [UIView class];
     UIView *contentViewParent = self;
     UIView *clipViewParent = self.cellScrollView;
     if (![NSStringFromClass([[self.subviews objectAtIndex:0] class]) isEqualToString:kTableViewCellContentView])
@@ -96,6 +99,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         // iOS 7
         contentViewParent = [self.subviews objectAtIndex:0];
         clipViewParent = self;
+        clipViewClass = [SWClipView class];
     }
     NSArray *cellSubviews = [contentViewParent subviews];
     [self insertSubview:self.cellScrollView atIndex:0];
@@ -126,13 +130,13 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     // Create the left and right utility button views, as well as vanilla UIViews in which to embed them.  We can manipulate the latter in order to effect clipping according to scroll position.
     // Such an approach is necessary in order for the utility views to sit on top to get taps, as well as allow the backgroundColor (and private UITableViewCellBackgroundView) to work properly.
 
-    self.leftUtilityClipView = [[UIView alloc] init];
+    self.leftUtilityClipView = [[clipViewClass alloc] init];
     self.leftUtilityClipConstraint = [NSLayoutConstraint constraintWithItem:self.leftUtilityClipView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0];
     self.leftUtilityButtonsView = [[SWUtilityButtonView alloc] initWithUtilityButtons:nil
                                                                            parentCell:self
                                                                 utilityButtonSelector:@selector(leftUtilityButtonHandler:)];
 
-    self.rightUtilityClipView = [[UIView alloc] initWithFrame:self.bounds];
+    self.rightUtilityClipView = [[clipViewClass alloc] initWithFrame:self.bounds];
     self.rightUtilityClipConstraint = [NSLayoutConstraint constraintWithItem:self.rightUtilityClipView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:0.0];
     self.rightUtilityButtonsView = [[SWUtilityButtonView alloc] initWithUtilityButtons:nil
                                                                             parentCell:self
