@@ -749,6 +749,8 @@ static NSString * const kTableViewPanState = @"state";
 {
     if (scrollView.contentOffset.x > [self leftUtilityButtonsWidth])
     {
+        [self willScrollToState:kCellStateRight];
+
         if ([self rightUtilityButtonsWidth] > 0)
         {
             if (self.delegate && [self.delegate respondsToSelector:@selector(swipeableTableViewCell:canSwipeToState:)])
@@ -768,6 +770,7 @@ static NSString * const kTableViewPanState = @"state";
     }
     else
     {
+        [self willScrollToState:kCellStateLeft];
         // Expose the left button view
         if ([self leftUtilityButtonsWidth] > 0)
         {
@@ -793,6 +796,8 @@ static NSString * const kTableViewPanState = @"state";
         [self.delegate swipeableTableViewCell:self didScroll:scrollView];
     }
 }
+
+- (void)willScrollToState:(SWCellState)state {}
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
